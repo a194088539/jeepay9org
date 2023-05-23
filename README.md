@@ -1,37 +1,21 @@
-# jeepay9org
+注: 本程序源码仅限个人或公司学习或自用，可以商用，但请勿用于非法用途。
 
-#### 介绍
-企业级四方支付系统
+服务器环境: centos7/8 + jdk1.8 + mysql5.7 + redis + (nginx)
 
-#### 软件架构
-软件架构说明
+开发工具: eclipse + jdk1.8 + maven
 
+系统架构: springboot + dubbo
 
-#### 安装教程
+捷派企业级四方支付系统, java开发, 商业全部开源, 5星级安全性和稳定性, 无bug无后门, 效率高, 支持大并发, 支持api接入.
+支持支付宝、微信、三方的(支付、代付、分账)全线产品接口接入.
+支持网银b2b、b2c模式内充. 支持客户端自助充值、代付.
+支持固定金额支付风控规则,支持生产聚合码.
+支持支付宝当面付的(扫码端、PC端、H5端)
+正式运营可绑定域名、SSL证书、有前端页面、有手机验证码注册页面和密码找回页面等 , 根据客户需求而定。
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+可用于企业四方财务系统，曾完美运营多年，功能齐全成熟，无bug。
 
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+系统演示:
+         管理员面板: http://42.51.45.8:58193   用户名: admin         密码: admin888
+         代理商面板: http://42.51.45.8:58192   用户名: testagent    密码: abc998998
+         商户面板:    http://42.51.45.8:58191   用户名: testuser       密码: abc998998
