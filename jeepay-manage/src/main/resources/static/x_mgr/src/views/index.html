@@ -1,0 +1,392 @@
+<div class="layui-fluid">
+
+
+  <div class="layui-row layui-col-space15">
+    <!--今/昨日统计-->
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">今/昨日订单</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-backlog">
+            <div carousel-item>
+              <ul class="layui-row layui-col-space10">
+                <script type="text/html" template lay-url="/api/statistics/count4dayIncome">
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日收款订单</h3>
+                      <p><cite>{{d.data.todayPayData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日收款总额</h3>
+                      <p><cite>{{d.data.todayPayData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日充值订单</h3>
+                      <p><cite>{{d.data.todayRechargeData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日充值总额</h3>
+                      <p><cite>{{d.data.todayRechargeData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日代付订单</h3>
+                      <p><cite>{{d.data.todayAgentpayData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>今日代付总额</h3>
+                      <p><cite>{{d.data.todayAgentpayData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日收款订单</h3>
+                      <p><cite>{{d.data.yesterdayPayData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日收款总额</h3>
+                      <p><cite>{{d.data.yesterdayPayData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日充值订单</h3>
+                      <p><cite>{{d.data.yesterdayRechargeData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日充值总额</h3>
+                      <p><cite>{{d.data.yesterdayRechargeData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日代付订单</h3>
+                      <p><cite>{{d.data.yesterdayAgentpayData.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>昨日代付总额</h3>
+                      <p><cite>{{d.data.yesterdayAgentpayData.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                </script>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--代理商统计-->
+    <!--<div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">代理商</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-backlog">
+            <div carousel-item>
+              <ul class="layui-row layui-col-space10">
+                <script type="text/html" template lay-url="/api/statistics/count4agent">
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>总数</h3>
+                      <p><cite>{{d.data.agentObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>余额</h3>
+                      <p><cite>{{d.data.agentObj.totalBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>可结算金额</h3>
+                      <p><cite>{{d.data.agentObj.totalSettAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>不可用余额</h3>
+                      <p><cite>{{d.data.agentObj.totalUnBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>分润总计</h3>
+                      <p><cite>{{d.data.agentProfitObj.totalProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>收款分润</h3>
+                      <p><cite>{{d.data.agentProfitObj.payProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付分润</h3>
+                      <p><cite>{{d.data.agentProfitObj.agentpayProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>充值分润</h3>
+                      <p><cite>{{d.data.agentProfitObj.rechargeProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                </script>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+    <!--商户统计-->
+    <!--<div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">商户</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-backlog">
+            <div carousel-item>
+              <ul class="layui-row layui-col-space10">
+                <script type="text/html" template lay-url="/api/statistics/count4mch">
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>总数</h3>
+                      <p><cite>{{d.data.mchObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>余额</h3>
+                      <p><cite>{{d.data.mchObj.totalBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>可结算金额</h3>
+                      <p><cite>{{d.data.mchObj.totalSettAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>不可用余额</h3>
+                      <p><cite>{{d.data.mchObj.totalUnBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>冻结金额</h3>
+                      <p><cite>{{d.data.mchObj.totalFrozenMoney/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>保证金额</h3>
+                      <p><cite>{{d.data.mchObj.totalSecurityMoney/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付余额</h3>
+                      <p><cite>{{d.data.mchObj.totalAgentpayBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs3">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付不可用余额</h3>
+                      <p><cite>{{d.data.mchObj.totalUnAgentpayBalance/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                </script>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+    <!--图表-->
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">近七日平台交易金额</div>
+        <div class="layui-card-body">
+          <div id="payOrderAcount" class="layui-input-inline" style="width: 100%;height:350px;"></div>
+        </div>
+      </div>
+    </div>
+    <!--平台-->
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">平台</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-backlog">
+            <div carousel-item>
+              <ul class="layui-row layui-col-space10">
+                <script type="text/html" template lay-url="/api/statistics/count4agent">
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代理商总数</h3>
+                      <p><cite>{{d.data.agentObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                </script>
+                <script type="text/html" template lay-url="/api/statistics/count4mch">
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>商户总数</h3>
+                      <p><cite>{{d.data.mchObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                </script>
+                <script type="text/html" template lay-url="/api/statistics/count4plat">
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>收款订单</h3>
+                      <p><cite>{{d.data.payDataObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>收款总额</h3>
+                      <p><cite>{{d.data.payDataObj.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>充值订单</h3>
+                      <p><cite>{{d.data.rechargeDataObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>充值总额</h3>
+                      <p><cite>{{d.data.rechargeDataObj.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付订单</h3>
+                      <p><cite>{{d.data.agentpayDataObj.totalCount}}</cite> 个</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付总额</h3>
+                      <p><cite>{{d.data.agentpayDataObj.totalAmount/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>总利润</h3>
+                      <p><cite>{{d.data.totalPlatProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>收款利润</h3>
+                      <p><cite>{{d.data.payDataObj.totalPlatProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>充值利润</h3>
+                      <p><cite>{{d.data.rechargeDataObj.totalPlatProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付利润</h3>
+                      <p><cite>{{d.data.agentpayDataObj.totalPlatProfit/100}}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>&nbsp;</h3>
+                      <p>&nbsp;</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>&nbsp;</h3>
+                      <p>&nbsp;</p>
+                    </a>
+                  </li>
+                </script>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use('console', layui.factory('console'));
+</script>
+<script>
+    layui.use('console', layui.factory('console'));
+</script>
+<script>
+    layui.use(['admin', 'echarts'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,echarts = layui.echarts;
+
+        var myChart = echarts.init(document.getElementById('payOrderAcount'),layui.echartsTheme);
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/statistics/orderDayAmount',
+            error: function(err) {
+                layer.alert(err);
+            },
+            success: function(res) {
+                if(res.code == 0) {
+                    // 指定图表的配置项和数据
+                    myChart.setOption({
+                        tooltip : { //提示框
+                            trigger: 'axis',
+                            formatter: "{b}<br>交易金额：{c}"
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: [res.data[6], res.data[5], res.data[4], res.data[3], res.data[2], res.data[1], res.data[0]]
+                        },
+                        yAxis: {type: 'value'},
+                        series: [{
+                            type: 'line',
+                            data: [
+                                res.data[13]==null ? 0 : res.data[13].totalAmount/100,
+                                res.data[12]==null ? 0 : res.data[12].totalAmount/100,
+                                res.data[11]==null ? 0 : res.data[11].totalAmount/100,
+                                res.data[10]==null ? 0 : res.data[10].totalAmount/100,
+                                res.data[9]==null ? 0 : res.data[9].totalAmount/100,
+                                res.data[8]==null ? 0 : res.data[8].totalAmount/100,
+                                res.data[7]==null ? 0 : res.data[7].totalAmount/100,
+                            ]
+                        }]
+                    });
+                }
+            }
+        });
+        //根据窗口的大小变动图表 --- 重点
+        window.onresize = function(){
+            myChart.resize();
+        }
+    });
+</script>

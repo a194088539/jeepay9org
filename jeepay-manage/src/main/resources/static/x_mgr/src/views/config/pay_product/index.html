@@ -1,0 +1,106 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付产品</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="config/pay_product/create" class="layui-btn" data-type="all" data-events="create">新增支付产品</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-href="config/pay_product/update/id='+ d.id +'">编辑</a>'
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return '<span class="layui-badge layui-bg-gray">关闭</span>';
+            }else if(d.status == 1) {
+                return '<span class="layui-badge">开启</span>';
+            }
+        };
+
+        var tplProductType = function(d){
+            if(d.productType == 1) {
+                return '收款';
+            }else if(d.productType == 2) {
+                return '充值';
+            }else {
+                return '';
+            }
+        };
+
+        var tplIfMode = function(d){
+            if(d.ifMode == 1) {
+                return "单独";
+            }else if(d.ifMode == 2) {
+                return "<span style='color: red'>轮询</span>";
+            }
+        };
+
+        var tplMchRate = function(d){
+            if(d.mchRate == '' || d.mchRate == null) {
+                return "未设置";
+            }else {
+                return "<span style='color: blue'>"+ d.mchRate+"%<span>";
+            }
+        };
+
+        var tplAgentRate = function(d){
+            if(d.agentRate == '' || d.agentRate == null) {
+                return "未设置";
+            }else {
+                return "<span style='color: blue'>"+ d.agentRate+"%<span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_product/list'
+            ,where: { access_token: layui.data(layui.setter.tableName).access_token}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', title: '产品ID'}
+                ,{field:'productName', title: '产品名称'}
+                ,{field:'productType', title: '产品类型', templet: tplProductType}
+                ,{field:'payTypeName',  title: '支付类型'}
+                ,{field:'agentRate', width: 150, title: '代理商费率',templet: tplAgentRate}
+                ,{field:'mchRate', width: 150, title: '商户费率',templet: tplMchRate}
+                ,{field:'ifMode', width: 150,  title: '接口模式',templet: tplIfMode}
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

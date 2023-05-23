@@ -1,0 +1,98 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>结算详情</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">上传账号文件</li>
+            </ul>
+
+            <div class="layui-tab-content">
+
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-normal" id="selectBtn">选择CSV文件</button>
+                    <button type="button" class="layui-btn" id="uploadBtn">开始上传</button>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<style>
+        table{
+        text-align: center;
+    }
+    .leftT {
+        text-align: left;
+    }
+</style>
+
+<script>
+    layui.use(['table','util','admin','upload'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,upload = layui.upload
+        ,element = layui.element;
+        
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var creId = layui.router().search.id;
+
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#selectBtn' //绑定元素
+            ,url: layui.setter.baseUrl + '/sett/csv_upload/' //上传接口
+            ,accept : 'file'
+            ,exts : "csv"
+            ,auto : false
+            ,bindAction: '#uploadBtn'
+            ,field : "csvFile"
+            ,data : {id: creId}
+            ,done: function(res){
+                //上传完毕回调
+                if(res.code == 0) {
+                    var data = res.data;
+                    layer.alert(
+                            "上传成功[总金额:" + data.totalAmount/100 + "元, 记录数:" + data.batchInertCount + ", 耗时:" + data.costTime/1000+ "秒]"
+                            ,{title: "保存成功"}
+                            ,function(index){
+                        layer.close(index);
+                        location.hash = '/sett/list';
+                    })
+                }else {
+                    layer.alert("上传失败[" + res.msg + "]");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                layer.alert("上传失败,系统异常");
+            }
+        });
+
+
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sett/get',
+            data: {
+                id: creId,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                console.log(res);
+
+            }
+        })
+
+    });
+</script>

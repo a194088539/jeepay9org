@@ -1,0 +1,254 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>资金归集配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">资金归集收款账号</li>
+            </ul>
+
+            <div class="layui-tab-content">
+                <fieldset class="layui-elem-field">
+                    <legend><button class='layui-btn layui-btn-xs layui-btn-danger'>配置信息</button></legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="cashCollStatusText" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label layui-hide modeItem">使用配置：</label>
+                        <div class="layui-input-inline layui-hide modeItem">
+                            <input type="text" id="cashCollModeText" disabled="disabled" class="layui-input">
+                        </div>
+
+                        <a class="layui-btn" id="changeStatus">修改状态</a>
+                        <a class="layui-btn" id="btnBack">返回上一页</a>
+                    </div>
+
+                </fieldset>
+            </div>
+
+
+            <div class="layui-tab-content layui-hide" id="tableDiv">
+                <div class="layui-row layui-hide" id="addConfigDiv">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a class="layui-btn" data-type="all" id="createConfig">新增收款账号</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialogDiv" class="layui-hide">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-inline changeStatusInnerDiv">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide changeModeDiv">
+            <label class="layui-form-label">配置</label>
+            <div class="layui-input-inline changeModeInnerDiv" >
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+            ,$ = layui.$
+            ,form = layui.form
+            ,element = layui.element
+            ,admin = layui.admin;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        var payAccountId = layui.router().search.id;
+        var payPassageId;
+
+
+
+        $('#btnBack').on('click', function() {
+            location.hash = '/config/pay_passage_account//payPassageId=' + payPassageId;
+        });
+
+        $('#createConfig').on('click', function() {
+            location.hash = '/config/pay_passage_account/cash_coll_create/belongPayAccountId=' + payAccountId;
+        });
+
+
+
+
+
+        form.on("radio(changeStatusFilter)", function(data){
+
+            var parentDiv = $(data.elem).parent().parent().parent();
+            if(data.value == 0){ //关闭
+                parentDiv.find("input[name='collMode'][value='1']").prop('checked', true);
+                parentDiv.find('.changeModeDiv').addClass('layui-hide');
+            }else{
+                parentDiv.find('.changeModeDiv').removeClass('layui-hide');
+            }
+            form.render();
+        });
+
+
+        //点击 修改状态 按钮
+        $('#changeStatus').on('click', function() {
+
+            var currentCollStatus = $('#cashCollStatusText').attr('collStatus'); //当前状态
+            var currentCollMode = $('#cashCollModeText').attr('collMode'); //当前配置选项
+
+            ///使用 prop('checked', true) layer无法显示正常样式 采用 append html方式。。。
+            if(currentCollStatus == 1){ //开启状态 支持修改配置选项。
+
+                    $('#dialogDiv .changeStatusInnerDiv').empty().html(
+                        '<input type="radio" lay-filter="changeStatusFilter" name="collStatus" title="开启" value="1" checked/>' +
+                        '<input type="radio" lay-filter="changeStatusFilter" name="collStatus" title="关闭" value="0" />');
+                $('#dialogDiv .changeModeDiv').removeClass('layui-hide');
+            }else{
+                $('#dialogDiv .changeStatusInnerDiv').empty().html(
+                    '<input type="radio" lay-filter="changeStatusFilter" name="collStatus" title="开启" value="1" />' +
+                    '<input type="radio" lay-filter="changeStatusFilter" name="collStatus" title="关闭" value="0" checked/>');
+                $('#dialogDiv .changeModeDiv').addClass('layui-hide');
+            }
+
+            if(currentCollMode == 1){ //继承
+
+                $('#dialogDiv .changeModeInnerDiv').empty().html(
+                    '<input type="radio" name="collMode" title="继承" value="1" checked />'+
+                    '<input type="radio" name="collMode" title="自定义" value="2" />');
+            }else{
+                $('#dialogDiv .changeModeInnerDiv').empty().html(
+                    '<input type="radio" name="collMode" title="继承" value="1" />'+
+                    '<input type="radio" name="collMode" title="自定义" value="2" checked/>');
+            }
+
+            form.render();
+
+            layer.open({
+                type: 0,
+                title: '修改状态',
+                content: $('#dialogDiv').html(),
+                yes: function(index, layro){
+
+                    var selectCollStatus = layro.find("input[name='collStatus']:checked").val();
+                    var selectCollMode= layro.find("input[name='collMode']:checked").val();
+                    admin.req({
+                        type: 'post',
+                        url: layui.setter.baseUrl + '/config/pay_passage_account/update',
+                        data: {
+                            id : payAccountId,
+                            cashCollStatus: selectCollStatus,
+                            cashCollMode: selectCollMode
+                        },
+                        error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                        success: function(res){
+                            if(res.code == 0){
+                                layer.alert(res.msg, {title: '保存成功'},function(index){
+                                    layer.close(index);
+                                    $.collInit();
+                                });
+                            }
+                        }
+                    });
+                    return true;
+                }
+            });
+            form.render();
+        });
+
+
+
+        //标题内容模板
+        var tplTitle = function(d){
+
+            if(d.belongPayAccountId == 0 ) {return "";}
+            return '<a class="layui-btn layui-btn-sm" lay-href="/config/pay_passage_account/cash_coll_update/id='+ d.id +'/belongPayAccountId='+d.belongPayAccountId+'">编辑</a>'
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "关闭";
+            }else if(d.status == 1) {
+                return "<span style='color: red'>开启</span>";
+            }
+        };
+
+
+        $.collInit = function(){
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_passage_account/get',
+                data: {id: payAccountId },
+                error: function(err){
+                    layer.alert(err);
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        payPassageId = res.data.payPassageId;
+
+                        var isAvailable = res.data.cashCollStatus == 1 ;
+                        var isDefault = res.data.cashCollMode == 1 ;
+
+                        if(isAvailable){ //开启状态 显示配置信息
+
+                            table.render({
+                                elem: '#cList'
+                                ,url: layui.setter.baseUrl + '/config/pay_cash_coll/list'
+                                ,where: {
+                                    access_token: layui.data(layui.setter.tableName).access_token,
+                                    belongPayAccountId : isDefault == 1 ? 0 : payAccountId,
+                                    status : isDefault ? '1' : -99  //继承默认的仅展示开启状态
+                                }
+                                ,id: 'tableReload'
+                                ,cols: [[
+                                    {field:'transInUserName', title: '分账收入方姓名'}
+                                    ,{field:'transInUserAccount',  title: '分账收入方账号'}
+                                    ,{field:'transInUserId',  title: '分账收入方用户ID'}
+                                    ,{title: '分账百分比', templet: "<span>{{ d.transInPercentage }}% </span>"}
+                                    ,{field:'belongPayAccountId',  title: '所属支付子账户ID'}
+                                    ,{title: '状态',templet: tplStatus }
+                                    ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+                                ]]
+                                ,page: true
+                                ,skin: 'line'
+                            });
+
+                            $('.modeItem').removeClass('layui-hide');
+                            $('#tableDiv').removeClass('layui-hide');
+
+                        }else{
+                            $('.modeItem').addClass('layui-hide');
+                            $('#tableDiv').addClass('layui-hide');
+                        }
+
+                        if(isDefault){
+                            $("#addConfigDiv").addClass('layui-hide');
+                        }else{
+                            $("#addConfigDiv").removeClass('layui-hide');
+                        }
+
+                        $("#cashCollStatusText").val(isAvailable ? "开启" : "关闭").attr('collStatus', res.data.cashCollStatus);
+                        $("#cashCollModeText").val(isDefault ? "继承" : "自定义").attr('collMode', res.data.cashCollMode);
+                    }
+                }
+            });
+        };
+
+        $.collInit(); //初始化
+
+        // 渲染表单
+        form.render();
+    });
+
+</script>

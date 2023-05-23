@@ -1,0 +1,108 @@
+
+<script type="text/html" template>
+  <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none">
+
+  <div class="layadmin-user-login-main" style="background-color:white">
+    <div class="layadmin-user-login-box layadmin-user-login-header">
+      <h2>代理商登录</h2>
+        <!-- <p>客户关系管理系统</p> -->
+    </div>
+    <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+        <input type="text" name="username" id="LAY-user-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+      </div>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+        <input type="password" name="password" id="LAY-user-login-password" lay-verify="required" placeholder="密码" class="layui-input">
+      </div>
+      <div class="layui-form-item" style="display: none">
+        <div class="layui-row">
+          <div class="layui-col-xs7">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="LAY-user-login-vercode"></label>
+            <input type="text" name="vercode" id="LAY-user-login-vercode"  placeholder="图形验证码" class="layui-input">
+          </div>
+          <div class="layui-col-xs5">
+            <div style="margin-left: 10px;">
+              <img src="/api/auth/auth_code_get" class="layadmin-user-login-codeimg" id="LAY-user-get-vercode">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin', 'form', 'user'], function(){
+  var $ = layui.$
+  ,setter = layui.setter
+  ,admin = layui.admin
+  ,form = layui.form
+  ,router = layui.router()
+  ,search = router.search;
+
+  form.render();
+
+  $.loginOk = function(res) {
+    //请求成功后，写入 access_token
+    layui.data(setter.tableName, {
+      key: setter.request.tokenName
+      ,value: res.data.access_token
+    });
+
+    //登入成功的提示与跳转
+    layer.msg('登入成功', {
+      offset: '15px'
+      ,icon: 1
+      ,time: 1000
+    }, function(){
+      location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+    });
+  };
+
+  //提交
+  form.on('submit(LAY-user-login-submit)', function(obj){
+
+    //请求登入接口
+    admin.req({
+      url: layui.setter.baseUrl + '/auth' //实际使用请改成服务端真实接口
+      ,data: obj.field
+      ,done: function(res){
+        var loginSecurityType = res.data.loginSecurityType;
+        var agentId = res.data.agentId;
+        if(loginSecurityType == 2) {  // 登录密码+谷歌验证组合
+          layer.prompt({
+            formType: 0,
+            title: '请输入谷歌验证码'
+          }, function(value, index, elem){
+            admin.req({
+              url: layui.setter.baseUrl + '/google_auth' //校验谷歌验证码
+              ,data: {
+                agentId : agentId,
+                googleCode : value
+              }
+              ,done: function(res1){
+                if(res.code == 0) {
+                  $.loginOk(res);
+                }
+                layer.close(index);
+              }
+            });
+          });
+        }else {
+          $.loginOk(res);
+        }
+      }
+    });
+    
+  });
+  
+});
+</script>

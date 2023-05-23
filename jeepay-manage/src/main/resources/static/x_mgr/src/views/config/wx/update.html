@@ -1,0 +1,133 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>微信用户</a>
+        <a><cite>修改用户</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">用户信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账号名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="account" id="account" placeholder="请输入微信账号" readonly="readonly"  required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账号密码</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="password" id="password" placeholder="请输入账号密码" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="serverId" id="serverId" placeholder="请输入服务器ID" required lay-verify="number" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">权重值</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weight" id="weight" placeholder="请输入权重值" required lay-verify="number" value="1.00" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注信息</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <a lay-href = "config/wx/"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+        , $ = layui.$
+        , admin = layui.admin
+        , layer = layui.layer 
+        , element = layui.element
+        , table = layui.table;
+        
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+        
+        var router = layui.router();
+        var userId = router.search.userId;
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/wx_user/get',
+            data: {
+                userId:userId,
+            },
+            error: function(err){
+                layer.alert(err);
+            },
+            success: function(res){
+                if(res.code == 0){
+                    $('#account').val(res.data.account);
+                    $('#password').val(res.data.password);
+                    $('#weight').val(res.data.weight);
+                    $('#serverId').val(res.data.serverId);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                    $('#remark').val(res.data.remark);
+                    form.render();
+                }
+            }
+        });
+
+        form.on('submit(update)', function(data){
+            data.field.userId = userId;
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/wx_user/update',
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/wx/';
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+    
+</script>

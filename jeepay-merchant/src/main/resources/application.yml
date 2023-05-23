@@ -1,0 +1,61 @@
+server:
+  port: 58191
+  context-path: /
+
+# 服务节点,要求分布式下每个节点不同
+node: 01
+
+spring:
+  dubbo:
+    application:
+      name: @project.artifactId@
+    registry:
+      address: @zookeeper.url@
+    scan: org.jeepay.mch
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    settings:
+      number_format: 0.##
+
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  profiles:
+     active: prod
+
+# JWT
+jwt:
+  cookie: JeePay_Mch_Token
+  secret: JeePayGood
+  expiration: 604800 # 7天
+
+config:
+  appId: wx077cb62e341f8a5c
+  appSecret: e663ea068f3e4f952f143de1432a35c2
+  token:
+  aesKey:
+  mchApiUrl: @mch.site.url@/api
+  downMchBillUrl: @reconciliation.site.url@/mch_bill_down
+  redirectWxCodeUrl: @mch.site.url@/get-weixin-code.html
+  payUrl: @pay.site.url@/api
+  notifyUrl: @mch.site.url@/api/payment/notify
+
+logging:
+  file: ./log/jeepay-merchant.log
+#日志资源
+resources:
+  #应用名称
+  appname: @project.artifactId@
+  #日志打印的基础扫描包
+  basepackage: org.jeepay
+  #日志保存目录
+  #logdir: ../logs

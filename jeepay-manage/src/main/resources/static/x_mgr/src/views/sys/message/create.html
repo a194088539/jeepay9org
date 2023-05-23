@@ -1,0 +1,77 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>新建消息</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">新建消息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form" style="width:100%">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">消息标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required" placeholder="请输入消息标题" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">消息内容</label>
+                        <div class="layui-input-block">
+                            <textarea id="mesContent" name="message" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+                            <a lay-href= "sys/message/" class="layui-btn layui-btn-primary">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','util','admin', 'layedit'], function(){
+        var form = layui.form
+        ,$ = layui.$
+        ,layedit = layui.layedit
+        ,layer = layui.layer 
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+        var index = layedit.build('mesContent'); //建立编辑器
+
+        form.on('submit(saveBtn)',function(data){
+
+            admin.req({
+                type: 'POST',
+                url: layui.setter.baseUrl + '/sys/message/add',
+                data: {
+                    title: data.field.title,
+                    message: layedit.getContent(index),
+                },
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg,{title: '新建成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/sys/message/';
+                        })
+                    }else {
+                        layer.alert(res.msg,{
+                            title: '请求成功，但是状态不对'
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>

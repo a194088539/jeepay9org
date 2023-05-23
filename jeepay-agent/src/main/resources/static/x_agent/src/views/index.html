@@ -1,0 +1,93 @@
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">账户信息</div>
+          <div class="layui-card-body">
+            <div class="layui-carousel layadmin-carousel layadmin-backlog" >
+              <div carousel-item>
+                <ul class="layui-row layui-col-space10">
+                  <script type="text/html" template lay-url="/api/data/count4Account">
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>账户余额</h3>
+                        <p><cite>{{ d.data.balance/100 }}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>可结算金额</h3>
+                        <p><cite>{{ d.data.settAmount/100 }}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>不可用余额</h3>
+                        <p><cite>{{ d.data.unBalance/100 }}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs6">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>商户数量</h3>
+                        <p><cite>{{ d.data.mchCount }}</cite> 个</p>
+                      </a>
+                    </li>
+                  </script>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">收入统计</div>
+          <div class="layui-card-body">
+            <div class="layui-carousel layadmin-carousel layadmin-backlog" >
+              <div carousel-item>
+                <ul class="layui-row layui-col-space10">
+                  <script type="text/html" template lay-url="/api/data/count4agent">
+                  <li class="layui-col-xs6">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>总利润</h3>
+                      <p><cite>{{ d.data.agentProfitObj.totalProfit/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs6">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>收款分润</h3>
+                      <p><cite>{{ d.data.agentProfitObj.payProfit/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs6">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>充值分润</h3>
+                      <p><cite>{{ d.data.agentProfitObj.rechargeProfit/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs6">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付分润</h3>
+                      <p><cite>{{ d.data.agentProfitObj.agentpayProfit/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  </script>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+<script>
+layui.use('console', layui.factory('console'));
+</script>
+

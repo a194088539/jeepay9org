@@ -1,0 +1,63 @@
+server:
+  port: 58193
+  context-path: /
+
+# 服务节点,要求分布式下每个节点不同
+node: 01
+
+spring:
+
+  dubbo:
+    application:
+      name: @project.artifactId@
+    registry:
+      address: @zookeeper.url@
+    scan: org.jeepay.manage
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    settings:
+      number_format: 0.##
+  http:
+    multipart:
+      maxFileSize: 10Mb
+      maxRequestSize: 10Mb
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  profiles:
+     active: prod
+
+# JWT
+jwt:
+  cookie: JeePay_Mgr_Token
+  secret: JeePayGood
+  expiration: 604800 # 7天
+  mchSecret: JeePayGood
+
+config:
+  mchQrUrl: @mch.site.url@/payment/qrcode
+  downMchBillUrl: @reconciliation.site.url@/mch_bill_down
+  loginMchUrl: @mch.site.url@/x_mch/start/index.html#/user/mgr_login/mchId=%s/token=%s
+  loginAgentUrl: @agent.site.url@/x_agent/start/index.html#/user/mgr_login/agentId=%s/token=%s
+  settNotifyUrl: @mgr.site.url@/api/notify/sett
+  payUrl: @pay.site.url@/api
+
+logging:
+  file: ./log/jeepay-manage.log
+#日志资源
+resources:
+  #应用名称
+  appname: @project.artifactId@
+  #日志打印的基础扫描包
+  basepackage: org.jeepay
+  #日志保存目录
+  #logdir: ../logs

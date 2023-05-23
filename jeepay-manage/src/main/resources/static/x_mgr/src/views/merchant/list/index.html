@@ -1,0 +1,196 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商户管理</cite></a>
+    <a><cite>所有商户</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">商户列表</li>
+      </ul>
+      <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-form" style="float:right;">
+              <div class="layui-form-item" style="margin:0;">
+                <div class="layui-input-inline">
+                  <input type="text" name="mchId" id="mchId" placeholder="商户ID" autocomplete="off" class="layui-input">
+                </div>
+                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+              <a class="layui-btn" lay-href="merchant/list/mch_add">新增</a>
+            </div>
+          </div>
+          <table id="JeePay_Mgr_Merchant_dataAll" lay-filter="JeePay_Mgr_Merchant_dataAll"></table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'table', 'util'], function(){
+    var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,element = layui.element
+            ,form = layui.form;
+
+    element.render('breadcrumb', 'breadcrumb');
+
+    var tplStatus = function(d){
+      if(d.status == 1) {
+        return "<span style='color: green'>启用</span>";
+      }
+      return "<span style='color: red'>停止</span>";
+    };
+
+    var tplEdit = function(d){
+      return "<a  href="+ d.loginMchUrl +" class='layui-btn layui-btn-primary layui-btn-xs' target='_blank'>登录系统</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='merchantDetail'>查看信息</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='settConfig'>结算设置</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='payPassage'>支付通道</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='agentpayPassage'>代付通道</a>" +
+              "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='change'>余额变更</a>" +
+              /*"<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='pwdReset'>重置密码</a>" +*/
+              "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
+    };
+    var tplAccount1 = function(d){
+	   return "<div style='color: Teal'>" + 
+              "<span style='width:112px;text-align: left'>" + d.balance/100 + "</span>" +
+			  "</div>"
+    };
+    var tplAccount2 = function(d){
+	   return "<div style='color: Orange'>" + 
+              "<span style='width:112px;text-align: center'>" + d.agentpayBalance/100 + "</span>" +
+			  "</div>"
+    };
+    var tplAccount3 = function(d){
+	   return "<div style='color: Teal'>" + 
+              "<span style='width:112px;text-align: center'>" + d.frozenMoney/100 + "</span>" +
+			  "</div>"
+    };
+    var tplAccount4 = function(d){
+	   return "<div style='color: Orange'>" + 
+              "<span style='width:112px;text-align: center'>" + d.securityMoney/100 + "</span>" +
+			  "</div>"
+    };
+
+    //商户列表
+    table.render({
+      elem: '#JeePay_Mgr_Merchant_dataAll'
+      ,url: layui.setter.baseUrl + '/mch_info/list' //列表接口
+      ,where: {
+          access_token: layui.data(layui.setter.tableName).access_token
+      }
+      ,id: 'tableReload'
+      ,page: true
+      ,cols: [[
+        {type: 'checkbox', fixed: 'left'}
+        ,{field: 'mchId', title: '商户ID', width: 100}
+        ,{field: 'name', title: '商户名称', width: 125}
+        ,{field: 'agentId', title: '代理商ID', width: 125}
+        ,{field: 'balance', title: '账户余额(元)', width: 112, templet: tplAccount1}
+        ,{field: 'agentpayBalance', title: '代付余额(元)', width: 112, templet: tplAccount2}
+        ,{field: 'frozenMoney', title: '冻结金额(元)', width: 112, templet: tplAccount3}
+        ,{field: 'securityMoney', title: '保证金额(元)', width: 112, templet: tplAccount4}
+        ,{field: 'status', title: '状态', width: 90,templet: tplStatus}
+		//,{field: 'account', title: '账户总额', width: 600, templet: tplAccount}
+        ,{field: 'createTime', title: '时间', width: 200, templet: '<div>{{ layui.util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss") }}</div>'}
+        ,{field: 'edit', title: '操作', width: 500, templet: tplEdit }
+      ]]
+      ,skin: 'line'
+    });
+
+    //监听工具条
+    table.on('tool(JeePay_Mgr_Merchant_dataAll)', function(obj){
+      var data = obj.data;
+      if(obj.event === 'merchantDetail'){
+        location.href = layui.setter.baseLocal + "merchant/list/mch_view/mchId=" + data.mchId;
+      } else if(obj.event === 'accountDetail'){
+        location.href = layui.setter.baseLocal + "merchant/list/account_view/mchId=" + data.mchId;
+      } else if(obj.event === 'payPassage'){
+        if(data.type == 2) {
+          layer.msg('私有账户,无需设置!');
+          return;
+        }
+        location.href = layui.setter.baseLocal + "merchant/pay_passage/list/mchId=" + data.mchId;
+      } else if(obj.event === 'agentpayPassage'){
+        if(data.type == 2) {
+          layer.msg('私有账户,无需设置!');
+          return;
+        }
+        location.href = layui.setter.baseLocal + "merchant/agentpay_passage/list/mchId=" + data.mchId;
+      } else if(obj.event === 'settConfig'){
+        if(data.type == 2) {
+          layer.msg('私有账户,无需设置!');
+          return;
+        }
+        location.href = layui.setter.baseLocal + "merchant/list/mch_sett/mchId=" + data.mchId;
+      }else if(obj.event === 'pwdReset'){
+        layer.prompt({
+          formType: 1,
+          title: '请输入新密码'
+        }, function(value, index, elem){
+          admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch_info/pwd_reset',
+            data: {
+              mchId : data.mchId,
+              password : value
+            },
+            error: function(err){
+              layer.alert(JSON.stringify(err.field), {
+                title: '错误提示'
+              })
+            },
+            success: function(res){
+              if(res.code == 0){
+                layer.msg('修改成功', {icon: 1});
+              }
+            }
+          });
+          layer.close(index);
+        });
+      }else if(obj.event === 'change'){
+        location.href = layui.setter.baseLocal + "merchant/list/mch_change/mchId=" + data.mchId;
+      }else if(obj.event === 'edit'){
+        location.href = layui.setter.baseLocal + "merchant/list/mch_edit/mchId=" + data.mchId;
+      }
+
+    });
+
+    // 搜索
+    var $ = layui.$, active = {
+      reload: function(){
+        var mchId = $('#mchId').val();
+        //执行重载
+        table.reload('tableReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          ,where: {
+            mchId: mchId
+          }
+        });
+      }
+    };
+    $('#search').on('click', function() {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    // 渲染表单
+    form.render();
+  });
+</script>

@@ -1,0 +1,109 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付通道账户</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <button class="layui-btn" data-type="all" data-events="create">新增账户</button>
+                    </div>
+                </div>
+                <table id="cList" lay-filter="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        var router = layui.router();
+        var payPassageId = router.search.payPassageId;
+
+        var tplEdit = function(d){
+
+            var appendHtml ="";
+            if(d.ifCode == 'alipay_qr_pc' || d.ifCode == 'alipay_qr_h5'){
+                appendHtml = "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='coll'>分账配置</a>";
+            }
+
+            return "<a class='layui-btn layui-btn-primary layui-btn-xs' lay-event='risk'>风控</a>" +
+                appendHtml +
+                "<a class='layui-btn layui-btn-xs' lay-event='edit'>编辑</a>";
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "关闭";
+            }else if(d.status == 1) {
+                return "<span style='color: green'>开启</span>";
+            }
+        };
+
+        var tplRate = function(d){
+            return "<span style='color: blue'>"+ d.passageRate+"%</span>";
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_passage_account/list'
+            ,where: { access_token: layui.data(layui.setter.tableName).access_token, payPassageId: payPassageId}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'id', title: '账户ID'}
+                ,{field:'accountName', title: '账户名称'}
+                ,{field:'ifCode',  title: '接口代码'}
+                ,{field:'ifName', title: '接口名称'}
+                ,{field:'passageRate', title: '通道费率', templet: tplRate}
+                ,{field:'status', title: '账户状态',templet: tplStatus }
+                ,{field:'edite', width: 260, title: '操作', templet: tplEdit }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        //监听工具条
+        table.on('tool(cList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'risk'){
+                location.href = layui.setter.baseLocal + "config/pay_passage_account/risk_set/id=" + data.id;
+            }  else if(obj.event === 'edit'){
+                location.href = layui.setter.baseLocal + "config/pay_passage_account/update/id=" + data.id;
+            }else if(obj.event === 'coll'){
+                location.href = layui.setter.baseLocal + "config/pay_passage_account/cash_coll_set/id=" + data.id;
+            }
+        });
+
+        // 事件处理
+        var events = {
+            create: function(othis, type){
+                location.hash =  "/config/pay_passage_account/create/payPassageId=" + payPassageId;
+            }
+        };
+        $('.layuiAdmin-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                    ,thisEvent = othis.data('events')
+                    ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

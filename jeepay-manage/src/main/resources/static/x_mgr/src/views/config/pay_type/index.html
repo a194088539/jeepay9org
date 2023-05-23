@@ -1,0 +1,75 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付配置</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付类型</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="config/pay_type/create" class="layui-btn" data-type="all" data-events="create">新增支付类型</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-href="config/pay_type/update/payTypeCode='+ d.payTypeCode +'">编辑</a>'
+        };
+
+        var tplType = function(d){
+            if(d.type == 1) {
+                return "支付";
+            }else if(d.type == 2) {
+                return "代付";
+            }
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "关闭";
+            }else if(d.status == 1) {
+                return "<span style='color: red'>开启</span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_type/list'
+            ,where: { access_token: layui.data(layui.setter.tableName).access_token}
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'payTypeCode', title: '支付类型代码'}
+                ,{field:'payTypeName',  title: '支付类型名称'}
+                ,{field:'type', title: '类别',templet: tplType }
+                ,{field:'status', title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 渲染表单
+        form.render();
+
+    });
+    
+</script>

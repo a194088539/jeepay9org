@@ -1,0 +1,132 @@
+
+<div class=" layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>支付配置</a>
+        <a><cite>修改入款账号</cite></a>
+    </div>
+</div>
+
+<style>
+    .layui-form-label {
+        width:120px !important;
+        margin-left:1%;
+    }
+    .layui-input-inline {
+        width: 80% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付产品</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form center">
+                    <input name="id" id="id" type="hidden" />
+                    <input name="belongPayAccountId" id="belongPayAccountId" type="hidden" value="0"/>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分账收入方姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="transInUserName" id="transInUserName" placeholder="分账收入方姓名" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分账收入方账号</label>
+                        <div class="layui-input-inline" >
+                            <input type="text" name="transInUserAccount" id="transInUserAccount" placeholder="分账收入方账号" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分账收入方用户ID (2088开头)</label>
+                        <div class="layui-input-inline" >
+                            <input type="text" name="transInUserId" id="transInUserId" placeholder="分账收入方用户ID (2088开头)" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">比例（%）</label>
+                        <div class="layui-input-inline" >
+                            <input type="text" name="transInPercentage" id="transInPercentage" placeholder="比例（%）" required lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline" >
+                            <input type="radio" name="status" title="开启" value="1" checked />
+                            <input type="radio" name="status" title="关闭" value="0" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" lay-submit="" lay-filter="update">保存</button>
+                            <a id="btnBack"  class="layui-btn ">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use(['form','table','util','admin',],function(){
+        var form = layui.form
+            , $ = layui.$
+            , admin = layui.admin
+            , layer = layui.layer
+            , element = layui.element
+            , table = layui.table;
+
+        element.render('breadcrumb', 'breadcrumb'); //渲染导航信息
+
+        var router = layui.router();
+        var id = router.search.id;
+        $('#id').val(id);
+
+        var belongPayAccountId = layui.router().search.belongPayAccountId;
+        $('#btnBack').on('click', function() {
+            location.hash = '/config/pay_passage_account/cash_coll_set/id='+ belongPayAccountId;
+        });
+
+        admin.req({
+            type: 'post',
+            url: layui.setter.baseUrl + '/config/pay_cash_coll/get',
+            data: { id: id},
+            error: function(err){layer.alert(err);},
+            success: function(res){
+                if(res.code == 0){
+                    $('#transInUserName').val(res.data.transInUserName);
+                    $('#transInUserAccount').val(res.data.transInUserAccount);
+                    $('#transInUserId').val(res.data.transInUserId);
+                    $('#transInPercentage').val(res.data.transInPercentage);
+                    $('#belongPayAccountId').val(res.data.belongPayAccountId);
+                    $("input[name='status'][value='"+res.data.status+"']").attr("checked",true);
+                    var payType = res.data.payType;
+
+                    form.render();
+                }
+            }
+        })
+
+        form.on('submit(update)', function(data){
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/config/pay_cash_coll/update', //模拟接口,
+                data: data.field,
+                error: function(err){layer.alert(err.msg,{title:"请求失败"})},
+                success: function(res){
+                    if(res.code == 0){
+                        layer.alert(res.msg, {title: '保存成功'},function(index){
+                            layer.close(index);
+                            location.hash = '/config/pay_passage_account/cash_coll_set/id='+ belongPayAccountId;
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+
+    });
+
+</script>

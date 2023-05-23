@@ -1,0 +1,49 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>支付小工具</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">获取支付宝用户ID</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-form-item">
+                        <div class="" style="padding-bottom: 40px;padding-top: 20px;">
+                            <label class="layui-form-label">手机扫码：</label>
+                            <button id="showPIC" class="layui-btn layui-btn-info layui-icon layui-icon-picture"> 显示二维码</button>
+                        </div>
+
+                        <div class="" style="padding-bottom: 40px;">
+                            <label class="layui-form-label">PC获取：</label>
+                            <a target="_blank" href='http://r-gepay.jeepay.vip/alipay/userid/get.php'
+                               class="layui-btn layui-btn-info layui-icon layui-icon-senior"> 请点击链接</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        $('#showPIC').on('click', function() {
+            layer.open({
+                title: "<b>提示： 请在支付宝APP内进行扫码</b>",
+                type: 1,
+                anim: 0,
+                content: "<img width='310' height='300' src='/images/get_alipay_userid_qr.png' />"
+            });
+        });
+    });
+    
+</script>

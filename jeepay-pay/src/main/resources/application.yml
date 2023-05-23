@@ -1,0 +1,69 @@
+server:
+  port: 53020
+
+# 服务节点,要求分布式下每个节点不同
+node: 01
+
+spring:
+  dubbo:
+    application:
+      name: @project.artifactId@
+    registry:
+      address: @zookeeper.url@
+    protocol:
+      name: dubbo
+      port: 20870
+    scan: org.jeepay.pay
+  redis:
+    host: @redis.ip@
+    password: @redis.pass@
+    port: @redis.port@
+    pool:
+      max-idle: 100
+      min-idle: 1
+      max-active: 1000
+      max-wait: -1
+  activemq:
+    broker-url: @activemq.url@
+    in-memory: false
+    pool:
+      enabled: true
+      max-connections: 10
+      idle-timeout: 30000  # 空闲的连接过期时间，默认为30秒
+      expiry-timeout: 0 # 强制的连接过期时间，与idleTimeout的区别在于：idleTimeout是在连接空闲一段时间失效，而expiryTimeout不管当前连接的情况，只要达到指定时间就失效。默认为0，never
+  freemarker:
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+    suffix: .ftl
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    settings:
+      number_format: 0.##
+  profiles:
+    active: prod
+
+config:
+  notifyUrl: @pay.site.url@/notify/%s/notify_res.htm
+  returnUrl: @pay.site.url@/notify/%s/return_res.htm
+  notifyTransUrl: @pay.site.url@/notify/%s/trans_notify.htm
+  notifyDivisionUrl: @pay.site.url@/notify/%s/division_notify.htm
+  payUrl: @pay.site.url@/api
+  certRootPath: @cert.root.path@
+  agentpayNotifyUrl: @pay.site.url@/api/agentpay/notify
+
+task:
+  reissue.pay.switch: @task.reissue.pay.switch@
+  reissue.pay.ip: @task.reissue.pay.ip@
+  reissue.trans.switch: @task.reissue.trans.switch@
+  reissue.trans.ip: @task.reissue.trans.ip@
+  reissue.agentpay.switch: @task.reissue.agentpay.switch@
+  reissue.agentpay.ip: @task.reissue.agentpay.ip@
+
+logging:
+  file: ./log/jeepay-pay.log
+

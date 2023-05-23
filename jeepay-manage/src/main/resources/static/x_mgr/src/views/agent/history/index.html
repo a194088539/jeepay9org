@@ -1,0 +1,98 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>资金流水</cite></a>
+    </span>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">资金流水列表</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row" style="margin-bottom:1%">
+                    <div class="layui-form" style="float:right;">
+                        <div class="layui-form-item" style="margin:0;">
+                        <div class="layui-input-inline">
+                            <input type="text" name="id" id="id" placeholder="流水ID" autocomplete="off" class="layui-input">
+                        </div>
+                        <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                        </div>
+                    </div>
+                </div>
+                <table id="zjlsList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     //标题内容模板
+     var tplTitle = function(d){
+        return '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-href="agent/history/detail/id='+ d.id +'">查看</a> '
+     };
+
+     layui.use(['table','util','form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+         var tplAmount = function(d){
+             if(d.fundDirection == 1) {
+                 return "<span style='color: darkgreen'>+ " + d.amount/100 + "</span>";
+             }else if(d.fundDirection == 2) {
+                 return "<span style='color: orangered'>- " +  d.amount/100 + "</span>";
+             }
+         };
+
+        table.render({
+            elem: '#zjlsList'
+            ,url: layui.setter.baseUrl + '/agent_account/history_list'
+            ,where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'agentId', title: '代理商ID', sort: true }
+                ,{field: 'balance',title: '变更前余额(元)',templet: '<div>{{d.balance/100}}</div>'}
+                ,{field: 'amount',title: '变更金额(元)',templet: tplAmount}
+                ,{field: 'afterBalance',title: '变更后余额(元)',templet: '<div>{{d.afterBalance/100}}</div>'}
+                ,{field: 'bizType',title: '业务类型',templet: '<div>{{d.bizType == 1?"分润":d.bizType == 2?"提现":d.bizType == 3?"调账":""}}</div>'}
+                ,{field: 'bizItem',title: '业务类目',templet: '<div>{{d.bizItem == 10?"余额":d.bizItem == 20?"支付":d.bizItem == 21?"代付":d.bizItem == 22?"线下充值":d.bizItem == 23?"线上充值":""}}</div>'}
+                ,{field: 'orderId',title: '业务订单' ,width: 270}
+                ,{field:'createTime',  title: '时间', templet: '<div>{{ layui.util.toDateString(d.createTime) }}</div>' }
+                ,{field:'edite', title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 搜索
+        var $ = layui.$, active = {
+            reload: function(){
+                var id = $('#id').val();
+                //执行重载
+                table.reload('tableReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        id : id
+                    }
+                });
+            }
+        };
+        $('#search').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        // 渲染表单
+        form.render();
+
+
+     })
+</script>

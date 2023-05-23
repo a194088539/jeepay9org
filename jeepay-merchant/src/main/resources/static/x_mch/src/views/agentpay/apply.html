@@ -1,0 +1,198 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>申请代付</cite></a>
+    </span>
+</div>
+
+
+<div class="layui-fluid" id="LAY-app-message">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">单笔代付</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <blockquote class="layui-elem-quote" id="amountTip"></blockquote>
+                </div>
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form center">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行/微信/支付宝 账户名</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  name="accountName"  lay-verify="required" placeholder="请输入银行/微信/支付宝账户名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行/微信/支付宝 账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  name="accountNo"  lay-verify="required" placeholder="请输入银行/微信/支付宝账号" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行名称<span style="color:orange">(选填)</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="bankName" placeholder="请输入银行名称(选填)" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开户行<span style="color:orange">(选填)</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="bankNetName" placeholder="请输入网点名称(开户行)(选填)" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所在省<span style="color:orange">(选填)</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="province" placeholder="请输入开户行所在省(选填)" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所在市<span style="color:orange">(选填)</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="city" placeholder="请输入开户行所在市(选填)" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行代码<span style="color:orange">(选填)</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="bankNumber" placeholder="请输入银行编码，详细编码参考代付银行代码(选填)" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">代付金额(元)</label>
+                            <div class="layui-input-block">
+                                <input type="text" required  id="agentpayAmount" name="agentpayAmount"  lay-verify="required|number" placeholder="请输入代付金额" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="payAuthDiv" style="display: none">
+                            <label class="layui-form-label">支付密码</label>
+                            <div class="layui-input-block">
+                                <input type="password" required id="payPassword" name="payPassword"  placeholder="请输入支付密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="googleAuthDiv" style="display: none">
+                            <label class="layui-form-label">谷歌验证码</label>
+                            <div class="layui-input-block">
+                                <input type="text" required id="googleCode" name="googleCode"  placeholder="请输入谷歌验证码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item ">
+                            <div class="layui-input-block">
+                                <button type="button" lay-submit lay-filter="btnJSJ" class="layui-btn">提交申请</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','util','admin'], function(){
+       var form = layui.form
+       ,$ = layui.$
+       ,admin = layui.admin
+       ,upload = layui.upload
+       ,element = layui.element;
+
+       element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+        var paySecurityType;
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/mch/get',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                    paySecurityType = res.data.paySecurityType;
+                    if(paySecurityType == 0) {
+                    }else if(paySecurityType == 1) {
+                        $("#payAuthDiv").show();
+                    }else if(paySecurityType == 2) {
+                        $("#googleAuthDiv").show();
+                    }else if(paySecurityType == 3) {
+                        $("#payAuthDiv").show();
+                        $("#googleAuthDiv").show();
+                    }
+                }
+            }
+        });
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/account/get',
+            error: function(err){
+                layer.alert(err.msg,{title:'请求失败'})
+            },
+            success:function(res){
+                if(res.code == 0 && res.data != null){
+                    $('#amountTip').html("可申请代付金额: <span style='color: red'>" + res.data.availableAgentpayBalance / 100 + "</span> 元");
+                }
+            }
+        });
+
+       form.on('submit(btnJSJ)', function(data){
+            // 校验
+            var payPassword = $("#payPassword").val();
+            var googleCode = $("#googleCode").val();
+            if(paySecurityType == 0) {
+            }else if(paySecurityType == 1) {
+               if(payPassword == '') {
+                   layer.alert("请填写支付密码!", function(index){
+                       layer.close(index);
+                   });
+                   return false;
+               }
+            }else if(paySecurityType == 2) {
+               if(googleCode == '') {
+                   layer.alert("请填写谷歌验证码!", function(index){
+                       layer.close(index);
+                   });
+                   return false;
+               }
+            }else if(paySecurityType == 3) {
+               if(payPassword == '') {
+                   layer.alert("请填写支付密码!", function(index){
+                       layer.close(index);
+                   });
+                   return false;
+               }
+               if(googleCode == '') {
+                   layer.alert("请填写谷歌验证码!", function(index){
+                       layer.close(index);
+                   });
+                   return false;
+               }
+            }
+            var agentpayAmount = $("#agentpayAmount").val();
+            layer.confirm("代付金额:"+agentpayAmount+"元,确定提交么?", function(index){
+               admin.req({
+                   type: 'post',
+                   url: layui.setter.baseUrl + '/agentpay/apply',
+                   data: data.field,
+                   success: function(res){
+                       layer.close(index);
+                       if(res.code == 0){
+                           layer.alert("申请成功,最终代付结果查看代付列表!", function(index){
+                               location.hash = '/agentpay/list';
+                           })
+                       }
+                   }
+               });
+            });
+            return false;//阻止跳转
+        });
+        form.render();
+
+    })
+</script>

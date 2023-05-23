@@ -1,0 +1,117 @@
+<div class="layui-card-header layui-card">
+        <span class="layui-breadcrumb" lay-filter="breadcrumb">
+            <a lay-href="">首页</a>
+            <a><cite>银行账号</cite></a>
+        </span>
+    </div>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">修改账号</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <form class="layui-form center">
+                        <input type="hidden" id="id" name="id" />
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账号类型</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="accountType" value="1" title="银行账号">
+                                <input type="radio" name="accountType" value="2" title="支付宝账号">
+                                <input type="radio" name="accountType" value="3" title="微信账号" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="bankName" name="bankName"  lay-verify="required" placeholder="请输入银行名称" autocomplete="off" class="layui-input accInfo">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账号名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="accountName" name="accountName"  lay-verify="required" placeholder="请输入账号名称" autocomplete="off" class="layui-input accInfo">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账号</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="accountNo" name="accountNo"  lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input accInfo">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注信息</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="remark" placeholder="请输入备注信息" autocomplete="off" class="layui-input remarkInfo">
+                            </div>
+                        </div>
+                        <div class="layui-form-item ">
+                            <div class="layui-input-block">
+                                <button type="button" lay-submit lay-filter="btnUP" class="layui-btn">保存</button>
+                                <a lay-href="merchant/bank/" class="layui-btn">返回</a>
+                            </div>
+                        </div>
+                    </form>    
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        layui.use(['form','util','admin'], function(){
+            var form = layui.form
+            ,$ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element;
+    
+            element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+            
+            var router = layui.router();
+    
+            //首先让页面中获取到原来的数据
+            admin.req({
+                type: 'get',
+                url: layui.setter.baseUrl + '/bank_account/get',
+                data: {
+                    id: router.search.id,
+                    accountNo: router.search.accountNo
+                },
+                error: function(err){
+                    layer.alert(err);
+                },
+                success: function(res){
+                    if(res.code == 0 ){
+                        $('#id').val(res.data.id);
+                        $("input[name='accountType'][value='"+res.data.accountType+"']").attr("checked",true);
+                        $('#accountName').val(res.data.accountName);
+                        $('#accountNo').val(res.data.accountNo);
+                        $('#bankName').val(res.data.bankName);
+                        $('#remark').val(res.data.remark);
+
+                    }
+                    form.render();
+                }
+                
+            });
+    
+            //提交修改后的数据
+            form.on('submit(btnUP)', function(data){
+                // 在这个回调函数里面写ajax提交
+                admin.req({
+                    type: 'post',
+                    url: layui.setter.baseUrl + '/bank_account/update',
+                    data: data.field,
+                    success: function(res){
+                        if(res.code == 0){
+                            layer.alert(res.msg ,function(index){
+                                layer.close(index);
+                                location.hash = '/merchant/bank/';
+                            })
+                        }
+                    }
+                })
+                return false;//阻止跳转
+            });
+            form.render();
+    
+        })
+    </script>

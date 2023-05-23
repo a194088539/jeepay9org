@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+    <!-- 配置文件 -->
+    <properties resource="generator.properties"></properties>
+
+    <!-- 驱动包 -->
+    <classPathEntry location="${classPathEntry}" />
+
+    <context id="MysqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 由于beginningDelimiter和endingDelimiter的默认值为双引号(")，在Mysql中不能这么写，所以还要将这两个默认值改为`  -->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <property name="useActualColumnNames" value="false" />
+
+        <!-- 为生成的Java模型创建一个toString方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
+
+        <!-- 为生成的Java模型类添加序列化接口，并生成serialVersionUID字段 -->
+        <plugin type="org.jeepay.core.plugin.SerializablePlugin">
+            <property name="suppressJavaInterface" value="false"/>
+        </plugin>
+
+        <!-- 生成一个新的selectByExample方法，这个方法可以接收offset和limit参数，主要用来实现分页 -->
+        <plugin type="org.jeepay.core.plugin.PaginationPlugin"></plugin>
+
+        <!-- Java模型生成equals和hashcode方法 -->
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>
+
+        <!-- 生成的代码去掉注释 -->
+        <commentGenerator type="org.jeepay.core.plugin.CommentGenerator">
+            <property name="suppressAllComments" value="true"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <!-- 数据库连接 -->
+        <jdbcConnection driverClass="${generator.jdbc.driver}"
+                        connectionURL="${generator.jdbc.url}"
+                        userId="${generator.jdbc.username}"
+                        password="${generator.jdbc.password}"/>
+
+        <!-- model生成 -->
+        <javaModelGenerator targetPackage="org.jeepay.core.entity" targetProject="src/main/java"/>
+
+        <!-- MapperXML生成 -->
+        <sqlMapGenerator targetPackage="org.jeepay.service.dao.mapper" targetProject="src/main/java"/>
+
+        <!-- Mapper接口生成 -->
+        <javaClientGenerator targetPackage="org.jeepay.service.dao.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
+        <table tableName="t_agent_info" domainObjectName="AgentInfo"><property name="useActualColumnNames" value="true" /></table>
+        <!--<table tableName="t_mch_agentpay_record" domainObjectName="MchAgentpayRecord"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_pay_interface" domainObjectName="PayInterface"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_agent_account_history" domainObjectName="AgentAccountHistory"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_mch_account_history" domainObjectName="MchAccountHistory"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_mch_agentpay_passage" domainObjectName="MchAgentpayPassage"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_agent_agentpay_passage" domainObjectName="AgentAgentpayPassage"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mch_info" domainObjectName="MchInfo"><property name="useActualColumnNames" value="true" /></table>
+        -->
+        <!--<table tableName="t_mch_pay_passage" domainObjectName="MchPayPassage"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--
+        <table tableName="t_mch_trade_order" domainObjectName="MchTradeOrder"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_pay_order" domainObjectName="PayOrder"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_pay_product" domainObjectName="PayProduct"><property name="useActualColumnNames" value="true" /></table>
+        -->
+        <!--<table tableName="t_recharge_order" domainObjectName="RechargeOrder"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_agent_sett_daily_collect" domainObjectName="AgentSettDailyCollect"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--
+        -->
+        <!--
+        <table tableName="t_mch_account" domainObjectName="MchAccount"><property name="useActualColumnNames" value="true" /></table>
+        -->
+        <!--<table tableName="t_pay_type" domainObjectName="PayType"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_sett_record" domainObjectName="SettRecord"><property name="useActualColumnNames" value="true" /></table>
+        -->
+
+        <!--<table tableName="t_mgr_sys_user" domainObjectName="SysUser"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_bank_card_bin" domainObjectName="BankCardBin"><property name="useActualColumnNames" value="true" /></table>-->
+
+        <!--<table tableName="t_mch_info" domainObjectName="MchInfo"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--
+        <table tableName="t_mch_bank_account" domainObjectName="MchBankAccount"><property name="useActualColumnNames" value="true" /></table>-->
+
+
+
+        <!--<table tableName="t_trans_order" domainObjectName="TransOrder"><property name="useActualColumnNames" value="true" /></table>-->
+
+
+
+        <!--
+        <table tableName="t_mch_sett_daily_collect" domainObjectName="MchSettDailyCollect"><property name="useActualColumnNames" value="true" /></table>
+        -->
+
+
+
+        <!--<table tableName="t_agent_account" domainObjectName="AgentAccount"><property name="useActualColumnNames" value="true" /></table>
+        -->
+
+        <!--<table tableName="t_pay_interface_type" domainObjectName="PayInterfaceType"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_pay_passage" domainObjectName="PayPassage"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_pay_passage_account" domainObjectName="PayPassageAccount"><property name="useActualColumnNames" value="true" /></table>
+
+
+        <table tableName="t_agentpay_passage" domainObjectName="AgentpayPassage"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_agentpay_passage_account" domainObjectName="AgentpayPassageAccount"><property name="useActualColumnNames" value="true" /></table>
+        -->
+        <!--<table tableName="t_agnet_passage" domainObjectName="AgentPassage"><property name="useActualColumnNames" value="true" /></table>-->
+
+
+        <!--
+
+        -->
+        <!-- 需要映射的表 -->
+        <!--<table tableName="t_mgr_sys_resource" domainObjectName="SysResource"><property name="useActualColumnNames" value="true" /></table>-->
+
+
+
+        <!--<table tableName="t_user_account" domainObjectName="UserAccount"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_user_account_log" domainObjectName="UserAccountLog"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_user_account_change_detail" domainObjectName="UserAccountChangeDetail"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_user_account_change_total" domainObjectName="UserAccountChangeTotal"><property name="useActualColumnNames" value="true" /></table>-->
+
+        <!--
+        <table tableName="t_mch_app" domainObjectName="MchApp"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_mch_sett_batch_record" domainObjectName="MchSettBatchRecord"><property name="useActualColumnNames" value="true" /></table>-->
+
+        <!--<table tableName="t_user_account" domainObjectName="UserAccount"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_user_account_log" domainObjectName="UserAccountLog"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_user_account_change_detail" domainObjectName="UserAccountChangeDetail"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_user_account_change_total" domainObjectName="UserAccountChangeTotal"><property name="useActualColumnNames" value="true" /></table>-->
+
+
+        <!--<table tableName="t_mch_account_history" domainObjectName="MchAccountHistory"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_mch_sett_daily_collect" domainObjectName="MchSettDailyCollect"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--
+
+
+
+
+        <table tableName="t_refund_order" domainObjectName="RefundOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mch_info" domainObjectName="MchInfo"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_mch_sett_daily_collect" domainObjectName="MchSettDailyCollect"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_mch_app" domainObjectName="MchApp"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_channel_config" domainObjectName="ChannelConfig"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_iap_receipt" domainObjectName="IapReceipt"><property name="useActualColumnNames" value="true" /></table>
+
+
+        <table tableName="t_trans_order" domainObjectName="TransOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_refund_order" domainObjectName="RefundOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mch_notify" domainObjectName="MchNotify"><property name="useActualColumnNames" value="true" /></table>
+
+
+        <table tableName="t_mch_sett_record" domainObjectName="MchSettRecord"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_mch_qr_code" domainObjectName="MchQrCode"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_sys_message" domainObjectName="SysMessage"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_check_batch" domainObjectName="CheckBatch"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_check_mistake" domainObjectName="CheckMistake"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_pay_order" domainObjectName="PayOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_trans_order" domainObjectName="TransOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_refund_order" domainObjectName="RefundOrder"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_check_mistake_pool" domainObjectName="CheckMistakePool"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_check_mistake" domainObjectName="CheckMistake"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mgr_sys_role" domainObjectName="SysRole"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mgr_sys_user_role" domainObjectName="SysUserRole"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mgr_sys_permission" domainObjectName="SysPermission"><property name="useActualColumnNames" value="true" /></table>
+
+
+        <table tableName="t_mch_bill" domainObjectName="MchBill"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_mch_channel" domainObjectName="MchChannel"><property name="useActualColumnNames" value="true" /></table>-->
+        <!--<table tableName="t_pay_order" domainObjectName="PayOrder"><property name="useActualColumnNames" value="true" /></table>
+
+        <table tableName="t_pay_channel" domainObjectName="PayChannel"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_passage_config" domainObjectName="PassageConfig"><property name="useActualColumnNames" value="true" /></table>
+        <table tableName="t_mch_passage" domainObjectName="MchPassage"><property name="useActualColumnNames" value="true" /></table>-->
+
+    </context>
+</generatorConfiguration>

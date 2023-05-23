@@ -1,0 +1,153 @@
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">账户信息</div>
+          <div class="layui-card-body">
+            <div class="layui-carousel layadmin-carousel layadmin-backlog">
+              <div carousel-item>
+                <ul class="layui-row layui-col-space10">
+                  <script type="text/html" template lay-url="/api/data/count4Account">
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>账户余额</h3>
+                      <p><cite>{{ d.data.balance/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>不可用余额</h3>
+                      <p><cite>{{ d.data.unBalance/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>可结算金额</h3>
+                      <p><cite>{{ d.data.settAmount/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>代付余额</h3>
+                      <p><cite>{{ d.data.agentpayBalance/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>不可用代付余额</h3>
+                      <p><cite>{{ d.data.unAgentpayBalance/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs4">
+                    <a lay-href="" class="layadmin-backlog-body">
+                      <h3>冻结金额</h3>
+                      <p><cite>{{ d.data.frozenMoney/100 }}</cite> 元</p>
+                    </a>
+                  </li>
+                  </script>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">今/昨日订单</div>
+          <div class="layui-card-body">
+            <div class="layui-carousel layadmin-carousel layadmin-backlog">
+              <div carousel-item>
+                <ul class="layui-row layui-col-space10">
+                  <script type="text/html" template lay-url="/api/data/count4dayIncome">
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日收款订单</h3>
+                        <p><cite>{{d.data.todayPayData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日收款总额</h3>
+                        <p><cite>{{d.data.todayPayData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日充值订单</h3>
+                        <p><cite>{{d.data.todayRechargeData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日充值总额</h3>
+                        <p><cite>{{d.data.todayRechargeData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日代付订单</h3>
+                        <p><cite>{{d.data.todayAgentpayData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>今日代付总额</h3>
+                        <p><cite>{{d.data.todayAgentpayData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日收款订单</h3>
+                        <p><cite>{{d.data.yesterdayPayData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日收款总额</h3>
+                        <p><cite>{{d.data.yesterdayPayData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日充值订单</h3>
+                        <p><cite>{{d.data.yesterdayRechargeData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日充值总额</h3>
+                        <p><cite>{{d.data.yesterdayRechargeData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日代付订单</h3>
+                        <p><cite>{{d.data.yesterdayAgentpayData.totalCount}}</cite> 个</p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs2">
+                      <a lay-href="" class="layadmin-backlog-body">
+                        <h3>昨日代付总额</h3>
+                        <p><cite>{{d.data.yesterdayAgentpayData.totalAmount/100}}</cite> 元</p>
+                      </a>
+                    </li>
+                  </script>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+layui.use('console', layui.factory('console'));
+</script>
+

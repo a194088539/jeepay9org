@@ -1,0 +1,69 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a><cite>资金归集配置</cite></a>
+    </span>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">支付产品</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-row">
+                    <div class="layuiAdmin-btns" style="margin-bottom: 10px;">
+                        <a lay-href="config/pay_cash_coll/create" class="layui-btn" data-type="all" data-events="create">新增收款账号</a>
+                    </div>
+                </div>
+                <table class="layui-hide center" id="cList"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['table','util', 'form'], function(){
+        var table = layui.table
+        ,$ = layui.$
+        ,form = layui.form
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+        //标题内容模板
+        var tplTitle = function(d){
+            return '<a class="layui-btn layui-btn-sm" lay-href="config/pay_cash_coll/update/id='+ d.id +'">编辑</a>'
+        };
+
+        var tplStatus = function(d){
+            if(d.status == 0) {
+                return "关闭";
+            }else if(d.status == 1) {
+                return "<span style='color: red'>开启</span>";
+            }
+        };
+
+        table.render({
+            elem: '#cList'
+            ,url: layui.setter.baseUrl + '/config/pay_cash_coll/list'
+            ,where: { access_token: layui.data(layui.setter.tableName).access_token, belongPayAccountId : 0 }
+            ,id: 'tableReload'
+            ,cols: [[
+                {field:'transInUserName', title: '分账收入方姓名'}
+                ,{field:'transInUserAccount',  title: '分账收入方账号'}
+                ,{field:'transInUserId',  title: '分账收入方用户ID'}
+                ,{title: '分账百分比', templet: "<span>{{ d.transInPercentage }}% </span>"}
+                ,{field:'belongPayAccountId',  title: '所属支付子账户ID'}
+                ,{title: '状态',templet: tplStatus }
+                ,{field:'edite', width: 200, title: '操作', templet: tplTitle }
+            ]]
+            ,page: true
+            ,skin: 'line'
+        });
+
+        // 渲染表单
+        form.render();
+    });
+    
+</script>

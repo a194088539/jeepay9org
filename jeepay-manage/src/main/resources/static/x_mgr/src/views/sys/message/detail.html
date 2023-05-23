@@ -1,0 +1,104 @@
+<div class="layui-card-header layui-card">
+    <span class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">首页</a>
+        <a>消息列表</a>
+        <a><cite>消息详情</cite></a>
+    </span>
+</div>
+<style>
+    .layui-form-label {
+        width:15% !important;
+        margin-left:1%;
+    }
+    .layui-input-inline, .layui-input-block {
+        width: 33% !important;
+    }
+</style>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">消息详情</li>
+            </ul>
+            <div class="layui-tab-content">
+                <form class="layui-form layui-form-pane" >
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="id" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">消息名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="title" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="status" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">创建者ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createUserId" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="createTime" disabled="disabled" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="updateTime" disabled="disabled" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item ">
+                        <label class="layui-form-label ">消息内容</label>
+                        <div class="layui-input-inline" style="width: 85%">
+                            <div id="message" style="padding: 10px"></div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" lay-href="sys/message/">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form','table', 'admin', 'util',], function(){
+        var form = layui.form
+        ,table = layui.table
+        ,$ = layui.$
+        ,admin = layui.admin
+        ,element = layui.element;
+
+        element.render('breadcrumb', 'breadcrumb');//渲染导航信息
+
+
+
+        admin.req({
+            type: 'get',
+            url: layui.setter.baseUrl + '/sys/message/get',
+            data: {id: layui.router().search.id},
+            success: function(res){
+                if(res.code == 0){
+                   $('#id').val(res.data.id);
+                   $('#title').val(res.data.title);
+                   $('#status').val(res.data.status == 0?'隐藏':'显示');
+                   $('#createUserId').val(res.data.createUserId);
+                   $('#createTime').val( layui.util.toDateString(res.data.createTime));
+                   $('#updateTime').val( layui.util.toDateString(res.data.updateTime));
+                   $('#message').html(res.data.message);
+                }else {
+                    layer.alert(res.msg,{
+                        title: '请求成功，但是状态不对'
+                    })
+                }
+            }
+        })
+    })
+</script>

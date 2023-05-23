@@ -1,0 +1,28 @@
+server:
+  port: 58194
+
+spring:
+  dubbo:
+    application:
+      name: jeepay-task
+    registry:
+      address: @zookeeper.url@
+    scan: org.jeepay
+  profiles:
+     active: prod
+
+  mvc:
+    static-path-pattern: /mch_bill_down/**
+  resources:
+    static-locations: file:${config.mchBillPath}
+
+config:
+  ali:
+    billPath: @bill.root.path@/alipay/
+  mchBillPath: @bill.root.path@/mchbill/
+
+logging:
+  file: ./log/jeepay-task.log
+  level:
+    root: info
+

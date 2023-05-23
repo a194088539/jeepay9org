@@ -1,0 +1,430 @@
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>数据分析</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief" lay-filter="jeepay_tab_dateSuccess">
+            <ul class="layui-tab-title">
+                <li class="layui-this">按天统计成功率</li>
+                <li>按小时统计成功率</li>
+                <li>按子账户统计成功率</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-row">
+                    	<div class="layuiAdmin-btns" style="margin-bottom:-40px;">
+			              <p style="padding-top: 20px;"><b>下表显示<span style="color: #2F9688;" id="whichMchId">全部商户</span>的订单成功率</b></p>
+			            </div>
+                        <div class="layui-form" style="float:right; margin-bottom: 20px;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="createTimeStart" id="createTimeStart" autocomplete="off" placeholder="开始时间" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="createTimeEnd" id="createTimeEnd" autocomplete="off" placeholder="结束时间" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="mchId" id="mchId" autocomplete="off" placeholder="商户ID" class="layui-input">
+                                </div>
+                                <button id="search" class="layui-btn" data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="JeePay_Mgr_PayOrder_dataAll" lay-filter="JeePay_Mgr_PayOrder_dataAll"></table><br />
+                    <div class="layui-card">
+                        <div class="layui-card-header"><strong>近七日订单成功率</strong></div>
+                        <div class="layui-card-body">
+                            <div id="dateRate" class="layui-input-inline" style="width: 100%;height:350px;"></div>
+                        </div>
+                    </div>
+                    <script>layui.use(['admin', 'table', 'util', 'laydate', 'echarts'], function() {
+                        var $ = layui.$,
+                            admin = layui.admin,
+                            table = layui.table,
+                            element = layui.element,
+                            laydate = layui.laydate,
+                            form = layui.form,
+                            util = layui.util,
+                            echarts = layui.echarts;
+                        element.render('breadcrumb', 'breadcrumb');
+                        
+                        var tplStatus = function(d){
+                        	var d = d.successRate;
+                        	var rate = d.substring(0,d.lastIndexOf("%"));
+						    if(parseFloat(rate) >= 50.00) {
+						      return "<span style='color: green'>" + d + "</span>";
+						    }else if(parseFloat(rate) < 50.00) {
+						      return "<span style='color: red'>" + d + "</span>";
+						    }
+						};
+                        
+                        var startTime = getDateOffset(util, -6, " 00:00:00"); //最近七日
+                        var endTime = getDateOffset(util, 0, " 23:59:59");
+                        $("#createTimeStart").val(startTime);
+                        $("#createTimeEnd").val(endTime);
+
+                        var createTimeStart = $('#createTimeStart').val();
+                        var createTimeEnd = $('#createTimeEnd').val();
+                        //用户列表
+                        table.render({
+                            elem: '#JeePay_Mgr_PayOrder_dataAll',
+                            url: layui.setter.baseUrl + '/data/selectSuccessRate' //订单成功率接口
+                            ,
+                            where: {
+                                access_token: layui.data(layui.setter.tableName).access_token,
+                                createTimeStart: createTimeStart,
+                                createTimeEnd: createTimeEnd
+                            },
+                            id: 'tableReload',
+                            page: true,
+                            cols: [
+                                [{
+                                    field: 'dateType',
+                                    title: '日期/时间'
+                                }, {
+                                    field: 'successCount',
+                                    title: '成功订单数'
+                                }, {
+                                    field: 'totalCount',
+                                    title: '总订单数'
+                                }, {
+                                    field: 'successRate',
+                                    title: '订单成功率',
+                                    templet: tplStatus
+                                }]
+                            ],
+                            skin: 'line'
+                        });
+
+                        // 搜索
+                        var $ = layui.$,
+                            active = {
+                                reload: function() {
+                                    var createTimeStart = $('#createTimeStart').val();
+                                    var createTimeEnd = $('#createTimeEnd').val();
+                                    var mchId = $("#mchId").val();
+                                    //执行重载
+                                    table.reload('tableReload', {
+                                        page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        },
+                                        where: {
+                                            createTimeStart: createTimeStart,
+                                            createTimeEnd: createTimeEnd,
+                                            mchId: mchId
+                                        }
+                                    });
+                                }
+                            };
+                        $('#search').on('click', function() {
+                        	var mchId = $("#mchId").val();
+                        	if(mchId != null && mchId != ""){
+	                            admin.req({
+		                            type: 'post',
+		                            url: layui.setter.baseUrl + '/data/selectMchInfo',
+		                            data: {mchId: mchId},
+		                            success: function(res) {
+		                                if(res.code == "0"){
+		                                	$("#whichMchId").html("商户ID为：" + mchId);
+		                                }else{
+		                                	return false;
+		                                }
+		                            }
+		                        });
+		                    }else{
+		                    	$("#whichMchId").html("全部商户");
+		                    }
+                            var type = $(this).data('type');
+                            active[type] ? active[type].call(this) : '';
+                        });
+
+                        laydate.render({
+                            elem: '#createTimeStart',
+                            type: 'datetime',
+                            format: 'yyyy-MM-dd HH:mm:ss'
+                        });
+
+                        laydate.render({
+                            elem: '#createTimeEnd',
+                            type: 'datetime',
+                            format: 'yyyy-MM-dd HH:mm:ss'
+                        });
+
+                        //util工具， days=时间偏移     拼接字符串
+                        function getDateOffset(util, days, appendStr) {
+
+                            var thisTime = new Date() * 1; //时间戳
+                            var thisDateFormat = "yyyy-MM-dd";
+
+                            if(!days || days == 0) {
+                                return util.toDateString(thisTime, thisDateFormat) + appendStr;
+                            }
+
+                            thisTime = new Date(thisTime + (24 * 60 * 60 * 1000 * days));
+
+                            return util.toDateString(thisTime, thisDateFormat) + appendStr;
+                        }
+                        // 渲染表单
+                        form.render();
+
+                        var myChart = echarts.init(document.getElementById('dateRate'),layui.echartsTheme);
+
+                        admin.req({
+                            type: 'post',
+                            url: layui.setter.baseUrl + '/data/dateRate',
+                            error: function(err) {
+                                layer.alert(err);
+                            },
+                            success: function(res) {
+                                if(res.code == 0) {
+                                    // 指定图表的配置项和数据
+                                    myChart.setOption({
+                                        tooltip : { //提示框
+                                            trigger: 'axis',
+                                            formatter: "{b}<br>订单成功率(百分比)：{c}"
+                                        },
+                                        xAxis: {
+                                            type: 'category',
+                                            data: [res.data[6], res.data[5], res.data[4], res.data[3], res.data[2], res.data[1], res.data[0]]
+                                        },
+                                        yAxis: {type: 'value'},
+                                        series: [{
+                                            type: 'line',
+                                            data: [
+                                                res.data[13]==null ? 0 : res.data[13].successRate,
+                                                res.data[12]==null ? 0 : res.data[12].successRate,
+                                                res.data[11]==null ? 0 : res.data[11].successRate,
+                                                res.data[10]==null ? 0 : res.data[10].successRate,
+                                                res.data[9]==null ? 0 : res.data[9].successRate,
+                                                res.data[8]==null ? 0 : res.data[8].successRate,
+                                                res.data[7]==null ? 0 : res.data[7].successRate
+                                            ]
+                                        }]
+                                    });
+                                }
+                            }
+                        });
+                        //根据窗口的大小变动图表 --- 重点
+                        window.onresize = function(){
+                            myChart.resize();
+                        }
+                    });
+                    </script>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="layui-row">
+                    	<div class="layuiAdmin-btns" style="margin-bottom:-40px;">
+			              <p style="padding-top: 20px;"><b>下表显示<span style="color: #2F9688;" id="whichMchId2">全部商户</span>的订单成功率</b></p>
+			            </div>
+                        <div class="layui-form" style="float:right; margin-bottom: 20px;">
+                            <div class="layui-form-item" style="margin:0;">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="createTimeStart" id="createTimeStart2" autocomplete="off" placeholder="开始时间" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="createTimeEnd" id="createTimeEnd2" autocomplete="off" placeholder="结束时间" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="mchId" id="mchId2" autocomplete="off" placeholder="商户ID" class="layui-input">
+                                </div>
+                                <button id="search2" class="layui-btn" data-type="reload2">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="JeePay_Mgr_PayOrder_Hour" lay-filter="JeePay_Mgr_PayOrder_Hour"></table><br />
+                    <div class="layui-card">
+                        <div class="layui-card-header"><strong>近十二小时订单成功率</strong></div>
+                        <div class="layui-card-body">
+                            <div id="hourRate" class="layui-input-inline" style="width: 100%;height:350px;"></div>
+                        </div>
+                    </div>
+                    <script>layui.use(['admin', 'table', 'util', 'laydate', 'echarts'], function() {
+                        var $ = layui.$,
+                            admin = layui.admin,
+                            table = layui.table,
+                            element = layui.element,
+                            laydate = layui.laydate,
+                            form = layui.form,
+                            util = layui.util,
+                            echarts = layui.echarts;
+
+                        element.render('breadcrumb', 'breadcrumb');
+                        var startTime2 = getDateOffset(util, 0, " 00:00:00"); //最近24小时
+                        var endTime2 = getDateOffset(util, 0, " 23:59:59");
+                        $("#createTimeStart2").val(startTime2);
+                        $("#createTimeEnd2").val(endTime2);
+
+                        var createTimeStart2 = $('#createTimeStart2').val();
+                        var createTimeEnd2 = $('#createTimeEnd2').val();
+                        //用户列表
+                        table.render({
+                            elem: '#JeePay_Mgr_PayOrder_Hour',
+                            url: layui.setter.baseUrl + '/data/hourSuccessRate' //订单成功率接口
+                            ,
+                            where: {
+                                access_token: layui.data(layui.setter.tableName).access_token,
+                                createTimeStart: createTimeStart2,
+                                createTimeEnd: createTimeEnd2
+                            },
+                            id: 'tableReload2',
+                            page: true,
+                            cols: [
+                                [{
+                                    field: 'dateType',
+                                    title: '日期/时间'
+                                }, {
+                                    field: 'successCount',
+                                    title: '成功订单数'
+                                }, {
+                                    field: 'totalCount',
+                                    title: '总订单数'
+                                }, {
+                                    field: 'successRate',
+                                    title: '订单成功率'
+                                }]
+                            ],
+                            skin: 'line'
+                        });
+
+                        // 搜索
+                        var $ = layui.$,
+                            active = {
+                                reload2: function() {
+                                    var createTimeStart2 = $('#createTimeStart2').val();
+                                    var createTimeEnd2 = $('#createTimeEnd2').val();
+                                    var mchId2 = $("#mchId2").val();
+                                    //执行重载
+                                    table.reload('tableReload2', {
+                                        page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        },
+                                        where: {
+                                            createTimeStart: createTimeStart2,
+                                            createTimeEnd: createTimeEnd2,
+                                            mchId: mchId2
+                                        }
+                                    });
+                                }
+                            };
+                        $('#search2').on('click', function() {
+                        	var mchId2 = $("#mchId2").val();
+                        	if(mchId2 != null && mchId2 != ""){
+	                            admin.req({
+		                            type: 'post',
+		                            url: layui.setter.baseUrl + '/data/selectMchInfo',
+		                            data: {mchId: mchId2},
+		                            success: function(res) {
+		                                if(res.code == "0"){
+		                                	$("#whichMchId2").html("商户ID为：" + mchId2);
+		                                }else{
+		                                	return false;
+		                                }
+		                            }
+		                        });
+		                    }else{
+		                    	$("#whichMchId2").html("全部商户");
+		                    }
+                            var type = $(this).data('type');
+                            active[type] ? active[type].call(this) : '';
+                        });
+
+                        laydate.render({
+                            elem: '#createTimeStart2',
+                            type: 'datetime',
+                            format: 'yyyy-MM-dd HH:mm:ss'
+                        });
+
+                        laydate.render({
+                            elem: '#createTimeEnd2',
+                            type: 'datetime',
+                            format: 'yyyy-MM-dd HH:mm:ss'
+                        });
+
+                        //util工具， days=时间偏移     拼接字符串
+                        function getDateOffset(util, days, appendStr) {
+
+                            var thisTime = new Date() * 1; //时间戳
+                            var thisDateFormat = "yyyy-MM-dd";
+
+                            if(!days || days == 0) {
+                                return util.toDateString(thisTime, thisDateFormat) + appendStr;
+                            }
+
+                            thisTime = new Date(thisTime + (24 * 60 * 60 * 1000 * days));
+
+                            return util.toDateString(thisTime, thisDateFormat) + appendStr;
+                        }
+                        // 渲染表单
+                        form.render();
+
+
+                        element.render('tab', 'jeepay_tab_dateSuccess');
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['admin','admin','echarts'], function() {
+        var $ = layui.$,
+            element = layui.element,
+            admin = layui.admin,
+            echarts = layui.echarts;
+
+        element.on('tab(jeepay_tab_dateSuccess)', function(data){
+            var myChart2 = echarts.init(document.getElementById('hourRate'),layui.echartsTheme);
+
+            admin.req({
+                type: 'post',
+                url: layui.setter.baseUrl + '/data/hourRate',
+                error: function(err) {
+                    layer.alert(err);
+                },
+                success: function(res) {
+                    if(res.code == 0) {
+                        // 指定图表的配置项和数据
+                        myChart2.setOption({
+                            tooltip : { //提示框
+                                trigger: 'axis',
+                                formatter: "{b}<br>订单成功率(百分比)：{c}"
+                            },
+                            xAxis: {
+                                type: 'category',
+                                data: [res.data[11], res.data[10], res.data[9], res.data[8], res.data[7], res.data[6], res.data[5], res.data[4], res.data[3], res.data[2], res.data[1], res.data[0]]
+                            },
+                            yAxis: {type: 'value'},
+                            series: [{
+                                type: 'line',
+                                data: [
+                                    res.data[23]==null ? 0 : res.data[23].successRate,
+                                    res.data[22]==null ? 0 : res.data[22].successRate,
+                                    res.data[21]==null ? 0 : res.data[21].successRate,
+                                    res.data[20]==null ? 0 : res.data[20].successRate,
+                                    res.data[19]==null ? 0 : res.data[19].successRate,
+                                    res.data[18]==null ? 0 : res.data[18].successRate,
+                                    res.data[17]==null ? 0 : res.data[17].successRate,
+                                    res.data[16]==null ? 0 : res.data[16].successRate,
+                                    res.data[15]==null ? 0 : res.data[15].successRate,
+                                    res.data[14]==null ? 0 : res.data[14].successRate,
+                                    res.data[13]==null ? 0 : res.data[13].successRate,
+                                    res.data[12]==null ? 0 : res.data[12].successRate
+                                ]
+                            }]
+                        });
+                    }
+                }
+            });
+            //根据窗口的大小变动图表 --- 重点
+            window.onresize = function(){
+                myChart2.resize();
+            }
+        });
+    })
+</script>
